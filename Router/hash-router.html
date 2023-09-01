@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>hash-router</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#/">turn white</a></li>
+      <li><a href="#/blue">turn blue</a></li>
+      <li><a href="#/green">turn green</a></li>
+    </ul>
+    <script>
+      // Create a router constructor
+      function Router() {
+        this.routes = {}; // Routing table, key: storage path, value: corresponding callback function
+        this.currentUrl = ""; // The current url path
+      }
+
+      // Method of adding a route, which is used to register routes and corresponding callbacks
+      Router.prototype.register = function (path, callback) {
+        this.routes[path] = callback || function () {};
+      };
+
+      // Refresh method to obtain the current URL path and execute the corresponding callback function
+      Router.prototype.refresh = function () {
+        this.currentUrl = location.hash.slice(1) || "/"; // Drop the # sign at the beginning
+        this.routes[this.currentUrl]();
+      };
+
+      // Initialization method that triggers the refresh method when the page loads and the URL path changes
+      Router.prototype.init = function () {
+        window.addEventListener("load", this.refresh.bind(this), false);
+        window.addEventListener("hashchange", this.refresh.bind(this), false);
+      };
+
+      // Gets the Router instantiation object and initializes it
+      window.Router = new Router();
+      window.Router.init();
+
+      var content = document.querySelector("body");
+      function changeBgColor(color) {
+        content.style.backgroundColor = color;
+      }
+
+      // Register routing table
+      Router.register("/", function () {
+        changeBgColor("white");
+      });
+      Router.register("/blue", function () {
+        changeBgColor("blue");
+      });
+      Router.register("/green", function () {
+        changeBgColor("green");
+      });
+    </script>
+  </body>
+</html>
