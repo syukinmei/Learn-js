@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript">
+      window.onload = () => {
+        const tasks = [];
+        for (let i = 0; i < 10; i++) {
+          tasks.push(() => myMock({ data: i }));
+        }
+
+        const processor = processTasks(...tasks);
+
+        const startBtn = document.getElementById("start-btn");
+        const pauseBtn = document.getElementById("pause-btn");
+
+        startBtn.addEventListener("click", async () => {
+          console.log("点击开始");
+          const results = await processor.start();
+          console.log("任务执行完毕", results);
+        });
+
+        pauseBtn.addEventListener("click", () => {
+          console.log("点击暂停");
+          processor.pause();
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <button id="start-btn">开始任务</button>
+    <button id="pause-btn">暂停任务</button>
+  </body>
+</html>
+<script type="text/javascript">
+  // 模拟api
+  const myMock = function (data, time = 1000) {
+    const promise = new Promise((resolve, reject) => {
+      const ran = Math.random() <= 0.8;
+      setTimeout(() => {
+        if (ran || true) {
+          resolve(data);
+        } else {
+          reject({ errorMsg: "请求失败" });
+        }
+      }, time ?? 1500);
+    });
+    return promise;
+  };
+</script>
